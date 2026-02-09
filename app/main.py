@@ -1,5 +1,6 @@
 import os
 import argparse
+import logging
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -10,6 +11,9 @@ from app.sync.executor import SyncExecutor
 
 
 load_dotenv()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -29,17 +33,16 @@ def main():
     comparator = SchemaComparator()
     diff = comparator.compare(source_schema, target_schema)
 
-    print("\nPLAN:")
-    
+    logger.info("PLAN:")
+
     if not diff["tables_to_create"] and not diff["tables_to_drop"]:
-        print("  no changes detected")
+        logger.info("no changes detected")
+    else:
+        for table in diff["tables_to_create"]:
+            logger.info(f"+ create table {table}")
 
-
-    for table in diff["tables_to_create"]:
-        print(f"  + create table {table}")
-
-    for table in diff["tables_to_drop"]:
-        print(f"  - drop table {table}")
+        for table in diff["tables_to_drop"]:
+            logger.info(f"- drop table {table}")
 
     executor = SyncExecutor(target_engine)
     executor.apply(
