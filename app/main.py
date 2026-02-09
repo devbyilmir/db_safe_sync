@@ -29,7 +29,17 @@ def main():
     comparator = SchemaComparator()
     diff = comparator.compare(source_schema, target_schema)
 
-    print("DIFF:", diff)
+    print("\nPLAN:")
+    
+    if not diff["tables_to_create"] and not diff["tables_to_drop"]:
+        print("  no changes detected")
+
+
+    for table in diff["tables_to_create"]:
+        print(f"  + create table {table}")
+
+    for table in diff["tables_to_drop"]:
+        print(f"  - drop table {table}")
 
     executor = SyncExecutor(target_engine)
     executor.apply(
