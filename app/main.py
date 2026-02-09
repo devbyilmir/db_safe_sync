@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 
+from app.sync.executor import SyncExecutor
 from app.db.inspector import SchemaInspector
 from app.diff.comparator import SchemaComparator
 
@@ -35,6 +36,9 @@ def main():
     diff = comparator.compare(source_schema, target_schema)
 
     print("DIFF:", diff)
+
+    executor = SyncExecutor(target_engine)
+    executor.apply(diff)
 
 
 if __name__ == "__main__":
