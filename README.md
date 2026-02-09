@@ -28,13 +28,27 @@ pip install -r requirements.txt
 SOURCE_DB_URL=postgresql://user:password@localhost:5432/source_db
 TARGET_DB_URL=postgresql://user:password@localhost:5432/target_db
 
-## Запуск
+## Быстрая проверка
 
-Показать план (ничего не меняет):
+1. Создать две PostgreSQL базы:
+
+source_db
+target_db
+
+2. В source_db создать тестовую таблицу:
+
+CREATE TABLE test_table (
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
+
+3. Запустить:
 
 python -m app.main
 
-применить изменения:
+Будет показан план изменений.
+
+4. Применить:
 
 python -m app.main --apply
 
