@@ -18,10 +18,15 @@ class SyncExecutor:
                 return TYPE_MAP[key]
         return String
 
-    def apply(self, diff, source_schema):
+    def apply(self, diff, source_schema, dry_run=True):
         metadata = MetaData()
 
         for table_name in diff["tables_to_create"]:
+            print(f"[PLAN] create table {table_name}")
+
+            if dry_run:
+                continue
+
             table_schema = source_schema[table_name]
 
             columns = []
@@ -43,4 +48,6 @@ class SyncExecutor:
                 *columns
             )
 
-        metadata.create_all(self.engine)
+        if not dry_run:
+            metadata.create_all(self.engine)
+
