@@ -9,7 +9,7 @@ class SchemaInspector:
         self.inspector = inspect(engine)
 
     def get_schema(self):
-        tables = []
+        tables = {}
 
         for table_name in self.inspector.get_table_names():
             columns_info = self.inspector.get_columns(table_name)
@@ -22,11 +22,9 @@ class SchemaInspector:
                 for col in columns_info
             ]
 
-            tables.append(
-                TableSchema(
-                    name=table_name,
-                    columns=columns
-                )
+            tables[table_name] = TableSchema(
+                name=table_name,
+                columns=columns
             )
 
         return tables
