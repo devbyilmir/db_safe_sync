@@ -38,7 +38,7 @@ def main():
     print("DIFF:", diff)
 
     executor = SyncExecutor(target_engine)
-    executor.apply(diff)
+    executor.apply(diff, source_schema)
 
 
 if __name__ == "__main__":
